@@ -1,11 +1,27 @@
 import './index.scss'
-import { Card, Form, Input, Button } from 'antd'
+import { Card, Form, Input, Button, message } from 'antd'
 import logo from '../../assets/logo.png'
+import { useDispatch } from 'react-redux'
+import { fetchLogin } from '../../store/modules/user'
+import { useNavigate } from 'react-router-dom'
+
 
 const Login = () => {
 
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
     const onFinish = (values) => {
         console.log('Success:', values);
+
+        //触发异步action fetchLogin
+        dispatch(fetchLogin(values))
+
+        // 1. 跳转到首页
+        navigate('/')
+
+        // 2. 提示下用户
+        message.success("Login successful")
     };
 
     return (
@@ -22,8 +38,8 @@ const Login = () => {
                                 message: 'Please enter a valid phone number!',
                             },
                             {
-                                pattern: /^\d{10}$/,
-                                message: 'Please enter a 10-digit number!',
+                                pattern: /^1[3-9]\d{9}$/,
+                                message: 'Please enter a valid chinese phone number!',
                             }
                         ]}>
                         <Input size="large" placeholder="Please input your phone number" />
@@ -33,8 +49,13 @@ const Login = () => {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input the verification code!',
+                                message: 'Please input the 6- digit verification code!(hier must be 246810)',
                             },
+                            {
+                                pattern: /^[0-9]{6}$/,
+                                message: 'Please input the 6-digit verification code! (It must be 246810)'
+                            }
+                            
                         ]}>
                         <Input size="large" placeholder="Please enter the verification code" />
                     </Form.Item>
