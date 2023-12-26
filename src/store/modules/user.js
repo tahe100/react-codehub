@@ -7,12 +7,13 @@ const userStore = createSlice({
     name: "user",
     //数据状态
     initialState:{
-        tocken:''
+        tocken: localStorage.getItem('token_key')|| ''
     },
 
     reducers:{
         setToken(state,action){
             state.tocken = action.payload
+            localStorage.setItem('token_key', action.payload)
         }
     }
 })
