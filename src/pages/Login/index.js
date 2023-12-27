@@ -60,7 +60,7 @@ const Login = () => {
                         <Input size="large" placeholder="Please enter the verification code" />
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" size="large" block>
+                        <Button type="default" htmlType="submit" size="large" block>
                             LOGIN
                         </Button>
                     </Form.Item>
