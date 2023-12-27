@@ -19,7 +19,8 @@ const router = createBrowserRouter([
         element:  <AuthRoute> <Layout /> </AuthRoute>, //Layout 是AuthRoute的子组件
         children: [//Layout 的children
             {
-                path: 'home',
+                //去掉path，设置index属性为true 实现默认二级路由配置
+                index: true,
                 element: <Home />
             },
             {
