@@ -11,11 +11,11 @@ const Login = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         console.log('Success:', values);
 
         //触发异步action fetchLogin
-        dispatch(fetchLogin(values))
+        await dispatch(fetchLogin(values))
 
         // 1. 跳转到首页
         navigate('/')
