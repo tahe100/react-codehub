@@ -15,10 +15,33 @@ import {
 
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { getChannelAPI } from '../../apis/articles'
   
   const { Option } = Select
   
   const Publish = () => {
+
+
+    //获取频道列表
+    const[channelList, setChannelList]=useState([])
+
+    /*1.useDispatch() 钩子提供了对 dispatch 函数的访问。通常在 React 组件中调用，用于触发一个动作来更新 Redux 存储。
+    2.user 和token 是用redux管理的所以useEffect里要用dispatch ，而这里 channels 不是用redux管理的*/
+
+    useEffect(
+        () =>{
+            const getChannelList = async() =>{
+                const res = await getChannelAPI()
+                setChannelList(res.data.channels)
+            }
+        getChannelList()    
+
+    },[])
+
+
+
     return (
       <div className="publish">
         <Card
@@ -48,7 +71,8 @@ import 'react-quill/dist/quill.snow.css'
               rules={[{ required: true, message: '请选择文章频道' }]}
             >
               <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-                <Option value={0}>推荐</Option>
+                {/*1.必须要有key保持保持唯一性一般是ID。 2.value属性用户选中后会自动收集起来作为接口的提交字段*/}
+                {channelList.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
               </Select>
             </Form.Item>
             <Form.Item
