@@ -17,6 +17,7 @@ const Login = () => {
         //触发异步action fetchLogin
         await dispatch(fetchLogin(values))
 
+        //必须要保证上面的dispatch异步函数完全OK了才能进行下面的操作 等待上面的OK了再进行下面的可以用promise里的then或者语法糖async+await
         // 1. 跳转到首页
         navigate('/')
 
