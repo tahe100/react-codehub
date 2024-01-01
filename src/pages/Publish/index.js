@@ -17,7 +17,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { getChannelAPI } from '../../apis/articles'
+import { createArticleAPI, getChannelAPI } from '../../apis/articles'
   
   const { Option } = Select
   
@@ -40,6 +40,26 @@ import { getChannelAPI } from '../../apis/articles'
 
     },[])
 
+    //提交表单
+    const onFinish = (formValue) =>{
+        //1.按照接口文档的格式处理收集到的表单数据
+        const { title, content, channel_id } = formValue
+        const reqData = {
+            title: title,
+            content: content,
+            cover: {
+                type: 0,
+                images: []
+
+            },
+            channel_id: channel_id
+        }
+    
+        //2.调用接口提交
+
+        createArticleAPI(reqData)
+    }
+
 
 
     return (
@@ -57,6 +77,7 @@ import { getChannelAPI } from '../../apis/articles'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 16 }}
             initialValues={{ type: 1 }}
+            onFinish={onFinish}
           >
             <Form.Item
               label="标题"
