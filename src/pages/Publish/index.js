@@ -16,30 +16,17 @@ import './index.scss'
 
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { createArticleAPI, getChannelAPI } from '../../apis/articles'
+import { createArticleAPI} from '../../apis/articles'
+import { useChannel } from '../../hooks/useChannel'
 
 const { Option } = Select
 
 const Publish = () => {
 
 
-    //获取频道列表
-    const [channelList, setChannelList] = useState([])
-
-    /*1.useDispatch() 钩子提供了对 dispatch 函数的访问。通常在 React 组件中调用，用于触发一个动作来更新 Redux 存储。
-    2.user 和token 是用redux管理的所以useEffect里要用dispatch ，而这里 channels 不是用redux管理的*/
-
-    useEffect(
-        () => {
-            const getChannelList = async () => {
-                const res = await getChannelAPI()
-                setChannelList(res.data.channels)
-            }
-            getChannelList()
-
-        }, [])
+    const {channelList}= useChannel()
 
     //提交表单
     const onFinish = (formValue) => {
