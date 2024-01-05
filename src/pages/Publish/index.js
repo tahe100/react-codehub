@@ -73,7 +73,19 @@ const Publish = () => {
             const res = await getArticleByID(articleId)
             //2.调用实例方法 完成回填
             //调用Form组件实例方法setFieldsValue回显数据
-            form.setFieldsValue(res.data)
+            form.setFieldsValue({
+                ...res.data,
+                //为什么仅仅只有上面那行不能回填封面?
+                //数据结构的问题 set方法 -> {type :3} {cover:{type: 3}}
+                type: res.data.cover.type
+            })
+            //回填图片列表
+            setImageType(res.data.cover.type)
+            //显示图片({url:url})
+            setImageList(res.data.cover.images.map(url =>{
+                return {url}
+            }))
+
             
         }
         getArticleDetail()
@@ -134,6 +146,7 @@ const Publish = () => {
                             action={'http://geek.itheima.net/v1_0/upload'}
                             onChange={onChange}
                             maxCount={imageType}
+                            fileList={imageList}
                         >
                             <div style={{ marginTop: 8 }}>
                                 <PlusOutlined />
