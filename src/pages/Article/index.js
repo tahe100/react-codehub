@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select } from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Popconfirm } from 'antd'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import { Table, Tag, Space } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
@@ -7,7 +7,7 @@ import img404 from '../../assets/error.png'
 import { useChannel } from '../../hooks/useChannel'
 import { use } from 'echarts'
 import { useEffect, useState } from 'react'
-import { getArticleListAPI } from '../../apis/articles'
+import { delArticleAPI, getArticleListAPI } from '../../apis/articles'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -68,12 +68,19 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="Delete the task"
+              description="Are you sure to delete this task?"
+              onConfirm={() => onConfirm(data)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              /></Popconfirm>
           </Space>
         )
       }
@@ -127,7 +134,7 @@ const Article = () => {
 
   const onFinish = (formValue) => {
     console.log(formValue)
-
+    //修改参数依赖项 引发数据的重新获取列表渲染
     setReqData({
       ...reqData,
       channel_id: formValue.channel_id,
@@ -139,7 +146,7 @@ const Article = () => {
 
   }
 
-  const onPageChange = (page) =>{
+  const onPageChange = (page) => {
     console.log(page)
     setReqData({
       ...reqData,
@@ -147,12 +154,18 @@ const Article = () => {
     })
   }
 
+  //删除文章
+  const onConfirm = async(data) =>{
+    console.log(data)
+    await delArticleAPI(data.id)
+    //修改参数依赖项 引发数据的重新获取列表渲染
+    //注意:必须要执行完delArticleAPI(data.id) 才干这一步 所以要加await和async
+    setReqData({
+      ...reqData,
+     
+    })
 
-
-
-
-
-
+  }
 
   return (
     <div>
@@ -200,9 +213,11 @@ const Article = () => {
       </Card>
       {/* 表格区域       */}
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={list} pagination={{ total: count,
-        pageSize: reqData.per_page,
-        onChange: onPageChange}} />
+        <Table rowKey="id" columns={columns} dataSource={list} pagination={{
+          total: count,
+          pageSize: reqData.per_page,
+          onChange: onPageChange
+        }} />
       </Card>
 
     </div>
