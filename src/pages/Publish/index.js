@@ -88,7 +88,10 @@ const Publish = () => {
 
             
         }
-        getArticleDetail()
+        //只有有ID的时候才能调用此函数
+        if(articleId){
+            getArticleDetail()
+        }
         
 
 
@@ -101,7 +104,7 @@ const Publish = () => {
                 title={
                     <Breadcrumb items={[
                         { title: <Link to={'/'}>Homepage</Link> },
-                        { title: 'publish a article' },
+                        { title: `${articleId? 'Edit':'Publish'} Article` },
                     ]}
                     />
                 }
