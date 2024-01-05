@@ -18,7 +18,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { createArticleAPI, getArticleByID} from '../../apis/articles'
+import { createArticleAPI, getArticleByID, updateArticleAPI} from '../../apis/articles'
 import { useChannel } from '../../hooks/useChannel'
 
 const { Option } = Select
@@ -38,15 +38,29 @@ const Publish = () => {
             content: content,
             cover: {
                 type: imageType,
-                images: imageList.map(item => item.response.data.url) //图片列表
+                images: imageList.map(item => {
+                    if(item.response){
+                        //回填的图片
+                        return item.response.data.url
+                    }else{
+                        //非回填的图片
+                        return item.url
+                    }
+                }) //图片列表
 
             },
             channel_id: channel_id
         }
 
         //2.调用接口提交
+        //处理不同的接口 新增 新增接口 ，编辑状态 更新窗口 id
+        if(articleId){
+            //更新窗口
+            updateArticleAPI({...reqData, id: articleId})
+        }else{
+            createArticleAPI(reqData)
 
-        createArticleAPI(reqData)
+        }
     }
 
     const[imageList, setImageList] = useState([])
