@@ -11,14 +11,14 @@ import {
     message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import './index.scss'
 
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { createArticleAPI} from '../../apis/articles'
+import { createArticleAPI, getArticleByID} from '../../apis/articles'
 import { useChannel } from '../../hooks/useChannel'
 
 const { Option } = Select
@@ -59,6 +59,29 @@ const Publish = () => {
         setImageType(e.target.value)
     }
 
+    //回填数据
+    const [searchParams] = useSearchParams()
+    const articleId = searchParams.get('id')
+    //console.log(articleId)
+    //获取实例
+    //注意下面的form要用form={form}来绑定
+    const[form] = Form.useForm()
+
+    useEffect(() =>{
+        //1.通过ID获取数据
+        async function getArticleDetail(){
+            const res = await getArticleByID(articleId)
+            //2.调用实例方法 完成回填
+            //调用Form组件实例方法setFieldsValue回显数据
+            form.setFieldsValue(res.data)
+            
+        }
+        getArticleDetail()
+        
+
+
+    },[articleId, form])
+
 
     return (
         <div className="publish">
@@ -76,6 +99,7 @@ const Publish = () => {
                     wrapperCol={{ span: 16 }}
                     initialValues={{ type: 0 }}
                     onFinish={onFinish}
+                    form={form}
                 >
                     <Form.Item
                         label="标题"
